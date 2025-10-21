@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funcionários - Sistema de Gestão</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <nav class="bg-white border-end" id="sidebar">
+            <div class="sidebar-header p-3">
+                <h5 class="m-0">SGI - Empresa</h5>
+            </div>
+            <ul class="list-unstyled components">
+                <li><a href="dashboard.html" class="nav-link"><i class="fa fa-home me-2"></i> Início</a></li>
+                <li><a href="funcionarios.html" class="nav-link active"><i class="fa fa-users me-2"> Funcionários</i></a></li>
+                <li><a href="equipes.html" class="nav-link"><i class="fa fa-layer-group me-2"></i> Equipes</a></li>
+                <li><a href="salario.html" class="nav-link"><i class="fa fa-money-bill-trend-up me-2"></i> Cálculo Salário</a></li>
+                <li><a href="#" id="logoutLink" class="nav-link"><i class="fa fa-sign-out-alt me-2"></i> Sair</a></li>
+            </ul>
+        </nav>
+
+        <div id="page-content-wrapper" class="w-100">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <div class="container-fluid">
+                    <button class="btn btn-outline-secondary" id="btnToggle"><i class="fa fa-bars"></i></button>
+                    <div class="ms-auto">
+                        <span id="userGreeting" class="me-3"></span>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container-fluid p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4>Funcionários</h4>
+                    <button class="btn btn-primary" id="btnNovo" data-bs-toggle="modal" data-bs-target="#modalCadastro">
+                        <i class="fa fa-plus me-1"></i> Cadastrar
+                    </button>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped" id="tabelaFuncionarios">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nome</th>
+                                        <th>Cargo</th>
+                                        <th>CPF</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalCadastro" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <form id="formCadastro" class="modal-content needs-validation" novalidate>
+                <div class="modal-header">
+                    <h5 class="modal-title">Cadastrar Funcionários</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="idFuncionario" class="form-label">ID</label>
+                        <input type="text" id="idFuncionario" class="form-control" required>
+                        <div class="invalid-feedback">Informe um ID.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nomeFuncionario" class="form-label">Nome</label>
+                        <input type="text" id="nomeFuncionario" class="form-control" required>
+                        <div class="invalid-feedback">Informe o nome.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cargoFuncionario" class="form-label">Cargo</label>
+                        <input type="text" id="cargoFuncionario" class="form-control" required>
+                        <div class="invalid-feedback">Informe o cargo.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cpfFuncionario" class="form-label">CPF</label>
+                        <input type="text" id="cpfFuncionario" class="form-control" required>
+                        <div class="invalid-feedback">Informe o CPF.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/funcionarios.js"></script>
+    <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

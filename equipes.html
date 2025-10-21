@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipes - Sistema de Gestão</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <nav id="sidebar" class="bg-white border-end">
+            <div class="sidebar-header p-3">
+                <h5 class="m-0">SGI - Empresa</h5>
+            </div>
+            <ul class="list-unstyled components">
+                <li><a href="dashboard.html" class="nav-link"><i class="fa fa-home me-2"></i> Início</a></li>
+                <li><a href="funcionarios.html" class="nav-link"><i class="fa fa-users me-2"></i> Funcionários</a></li>
+                <li><a href="equipes.html" class="nav-link active"><i class="fa fa-layer-group me-2"></i> Equipes</a></li>
+                <li><a href="salario.html" class="nav-link"><i class="fa fa-money-bill-trend-up me-2"></i> Cálculo Salário</a></li>
+                <li><a href="#" id="logoutLink" class="nav-link"><i class="fa fa-sign-out-alt me-2"></i> Sair</a></li>
+            </ul>
+        </nav>
+
+        <div id="page-content-wrapper" class="w-100">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <div class="container-fluid">
+                    <button class="btn btn-outline-secondary" id="btnToggle"><i class="fa fa-bars"></i></button>
+                    <div class="ms-auto">
+                        <span id="userGreeting" class="me-3"></span>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container-fluid p-4">
+                <h4>Equipes</h4>
+                <p>Essa é uma tela inicial de exemplo. Você pode listar equipes, criar uma equipe e associar funcionários.</p>
+
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/equipes.js"></script>
+    <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
