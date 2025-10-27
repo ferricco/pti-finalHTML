@@ -1,111 +1,126 @@
-const sess = JSON.parse(localStorage.getItem('sgi_usuario'));
-    if (!sess) { window.location.href = 'index.html'; }
+const API_URL = "http://localhost:8080/api/funcionarios";
 
-    document.getElementById('userGreeting').textContent = sess.username + ' (' + sess.role + ')';
+let funcionarioEditando = null; // armazena o funcionário em edição
 
-    // renderiza tabela inicial
-    function renderTabela() {
-      const tbody = document.querySelector('#tabelaFuncionarios tbody');
-      tbody.innerHTML = '';
-      const funcionarios = JSON.parse(localStorage.getItem('sgi_funcionarios') || '[]');
-      funcionarios.forEach(f => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${f.id}</td>
-          <td>${f.nome}</td>
-          <td>${f.cargo}</td>
-          <td>${f.cpf}</td>
-          <td>
-            <button class="btn btn-sm btn-warning btn-editar" data-id="${f.id}"><i class="fa fa-pen"></i></button>
-            <button class="btn btn-sm btn-danger btn-excluir" data-id="${f.id}"><i class="fa fa-trash"></i></button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
+// Renderiza tabela
+function renderTabela(funcionarios) {
+  const tbody = document.querySelector("#tabelaFuncionarios tbody");
+  tbody.innerHTML = "";
+
+  funcionarios.forEach((f) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${f.id}</td>
+      <td>${f.nome}</td>
+      <td>${f.cargo}</td>
+      <td>${f.cpf}</td>
+      <td>
+        <button class="btn btn-warning btn-sm me-1" onclick="editarFuncionario(${f.id})">Editar</button>
+        <button class="btn btn-danger btn-sm" onclick="excluirFuncionario(${f.id})">Excluir</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Carrega funcionários
+async function carregarFuncionarios() {
+  const response = await fetch(API_URL);
+  const data = await response.json();
+  renderTabela(data);
+}
+
+// Submissão do formulário (cadastrar ou editar)
+document.getElementById("formCadastro").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const nome = document.getElementById("nomeFuncionario").value.trim();
+  const cargo = document.getElementById("cargoFuncionario").value.trim();
+  const cpf = document.getElementById("cpfFuncionario").value.trim();
+
+  if (!nome || !cargo || !cpf) {
+    alert("Preencha todos os campos!");
+    return;
+  }
+
+  const funcionario = { nome, cargo, cpf };
+
+  let response;
+  if (funcionarioEditando) {
+    // Edição (PUT)
+    response = await fetch(`${API_URL}/${funcionarioEditando.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(funcionario)
+    });
+  } else {
+    // Cadastro (POST)
+    response = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(funcionario)
+    });
+  }
+
+  if (response.ok) {
+    alert(funcionarioEditando ? "Funcionário atualizado!" : "Funcionário cadastrado!");
+    document.getElementById("formCadastro").reset();
+    const modal = bootstrap.Modal.getInstance(document.getElementById("modalCadastro"));
+    modal.hide();
+    funcionarioEditando = null;
+    carregarFuncionarios();
+  } else {
+    alert("Erro ao salvar funcionário.");
+  }
+});
+
+// Função para abrir o modal com dados de edição
+async function editarFuncionario(id) {
+  try {
+    const response = await fetch(`${API_URL}/${id}`);
+    if (!response.ok) {
+      alert("Erro ao buscar funcionário.");
+      return;
     }
 
-    renderTabela();
+    const f = await response.json();
+    funcionarioEditando = f;
 
-    // salvar cadastro
-    document.getElementById('formCadastro').addEventListener('submit', function(e){
-      e.preventDefault();
-      const id = document.getElementById('idFuncionario').value.trim();
-      const nome = document.getElementById('nomeFuncionario').value.trim();
-      const cargo = document.getElementById('cargoFuncionario').value.trim();
-      const cpf = document.getElementById('cpfFuncionario').value.trim();
+    // Preenche os campos
+    document.getElementById("nomeFuncionario").value = f.nome;
+    document.getElementById("cargoFuncionario").value = f.cargo;
+    document.getElementById("cpfFuncionario").value = f.cpf;
 
-      if (!id || !nome || !cargo || !cpf) {
-        // bootstrap will show invalid-feedback if uses needs-validation + novalidate (basic)
-        this.classList.add('was-validated');
-        return;
-      }
+    // Abre o modal
+    const modalElement = document.getElementById("modalCadastro");
+    if (!modalElement) {
+      console.error("Modal não encontrado no DOM!");
+      return;
+    }
 
-      const funcionarios = JSON.parse(localStorage.getItem('sgi_funcionarios') || '[]');
-      // simples verificação de ID duplicado
-      if (funcionarios.some(x => x.id === id)) {
-        alert('Já existe funcionário com esse ID.');
-        return;
-      }
+    const modal = new bootstrap.Modal(modalElement);
+    modal.show();
 
-      funcionarios.push({ id, nome, cargo, cpf });
-      localStorage.setItem('sgi_funcionarios', JSON.stringify(funcionarios));
-      renderTabela();
-      // fechar modal
-      const modalEl = document.querySelector('#modalCadastro');
-      const modal = bootstrap.Modal.getInstance(modalEl);
-      modal.hide();
-      this.reset();
-      this.classList.remove('was-validated');
-    });
+  } catch (error) {
+    console.error("Erro ao editar funcionário:", error);
+  }
+}
 
-    // delegação para editar/excluir (simples)
-    document.querySelector('#tabelaFuncionarios tbody').addEventListener('click', function(e){
-      if (e.target.closest('.btn-excluir')) {
-        const id = e.target.closest('.btn-excluir').dataset.id;
-        if (confirm('Deseja remover o funcionário?')) {
-          let funcionarios = JSON.parse(localStorage.getItem('sgi_funcionarios') || '[]');
-          funcionarios = funcionarios.filter(f => f.id !== id);
-          localStorage.setItem('sgi_funcionarios', JSON.stringify(funcionarios));
-          renderTabela();
-        }
-      } else if (e.target.closest('.btn-editar')) {
-        const id = e.target.closest('.btn-editar').dataset.id;
-        const funcionarios = JSON.parse(localStorage.getItem('sgi_funcionarios') || '[]');
-        const f = funcionarios.find(x => x.id === id);
-        if (!f) return;
-        // preencher modal com dados existentes
-        document.getElementById('idFuncionario').value = f.id;
-        document.getElementById('idFuncionario').setAttribute('disabled','disabled');
-        document.getElementById('nomeFuncionario').value = f.nome;
-        document.getElementById('cargoFuncionario').value = f.cargo;
-        document.getElementById('cpfFuncionario').value = f.cpf;
-        const modal = new bootstrap.Modal(document.getElementById('modalCadastro'));
-        modal.show();
 
-        // ao salvar, remover antigo e inserir atualizado (simples)
-        document.getElementById('formCadastro').onsubmit = function(evt) {
-          evt.preventDefault();
-          const nome2 = document.getElementById('nomeFuncionario').value.trim();
-          const cargo2 = document.getElementById('cargoFuncionario').value.trim();
-          const cpf2 = document.getElementById('cpfFuncionario').value.trim();
-          let funcionarios2 = JSON.parse(localStorage.getItem('sgi_funcionarios') || '[]');
-          funcionarios2 = funcionarios2.map(item => item.id === id ? { id, nome: nome2, cargo: cargo2, cpf: cpf2 } : item);
-          localStorage.setItem('sgi_funcionarios', JSON.stringify(funcionarios2));
-          renderTabela();
-          modal.hide();
-          // restaurar comportamento original do form
-          document.getElementById('formCadastro').onsubmit = null;
-          document.getElementById('idFuncionario').removeAttribute('disabled');
-        };
-      }
-    });
+// Função de exclusão
+async function excluirFuncionario(id) {
+  if (!confirm("Deseja realmente excluir este funcionário?")) return;
 
-    document.getElementById('logoutLink').addEventListener('click', (e) => {
-      e.preventDefault();
-      localStorage.removeItem('sgi_usuario');
-      window.location.href = 'index.html';
-    });
+  const response = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+  if (response.ok) {
+    alert("Funcionário excluído!");
+    carregarFuncionarios();
+  } else {
+    alert("Erro ao excluir funcionário.");
+  }
+}
 
-    document.getElementById('btnToggle').addEventListener('click', () => {
-      document.getElementById('sidebar').classList.toggle('collapsed');
-    });
+// Inicialização
+document.addEventListener("DOMContentLoaded", () => {
+  carregarFuncionarios();
+});
