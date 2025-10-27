@@ -17,28 +17,9 @@ Refatorar e ampliar o sistema de gestão interna desenvolvido na fase anterior, 
   - Listagem automática de funcionários;
   - Logout de sessão.
 
-  ## Estrutura dos pacotes (Java)
-
-  |---modelo
-  | |__Funcionario.java
-  |---servico
-  | |__CalcularSalario.java
-  |___teste
-  |___FuncionarioTest.java
-
-  ## Estrutura do projeto WEB
-  
-  |---index.html
-  |---dashboard.html
-  |---equipes.html
-  |---funcionarios.html
-  |---salario.html
-  |---css/
-  | |__estilo.css
-  |--js/
-  | |__login.js
-  | |__funcionarios.js
-  | |__dashboard.js
-  | |__equipes.js
-  | |__main.js
-  | |__salario.js# pti-finalHTML
+  # Funcionamento
+  - Primeiro Inicie o Projeto Pti_Final_Web
+  - Assim que iniciar, abra esse Projeto HTML
+  - Inicie a tela de login (F5)
+  - Use as funções disponiveis, como cadastrar um funcionário, e somar o sálario.
+  - Caso queira faça um banco de dados com o nome que está no projeto Java. 
